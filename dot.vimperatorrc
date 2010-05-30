@@ -1,0 +1,319 @@
+" bonty .vimperatorrc
+" for Vimperator 2.0 ver.090727
+
+
+" prefs
+" ======================================================================
+" undo保持数
+set! browser.sessionstore.max_tabs_undo=30
+
+" ページのアクセスキーを無効化
+set! ui.key.generalAccessKey=0
+
+" Awesomebarの補完対象にBookmarkletを含める&件数を変更
+set! browser.urlbar.filter.javascript=false
+set! browser.urlbar.maxRichResults=20
+
+" ポップアップ許可数を拡張 cf.http://la.ma.la/blog/diary_200611171115.htm
+set! dom.popup_maximum=9999
+
+" Gmail/LDR/Fastladder/OpenFL/はてブでは新規タブをバックグラウンドで開く
+autocmd LocationChange (?!https?://(mail\.google\.com\/(mail|a)\/|(reader\.livedoor\.com|fastladder\.com|0\.0\.0\.0\:3000)/reader/|b\.hatena\.ne\.jp/retlet)) :set! browser.tabs.loadDivertedInBackground=false
+autocmd LocationChange https?://(mail\.google\.com\/(mail|a)\/|(reader\.livedoor\.com|fastladder\.com|0\.0\.0\.0\:3000)/reader/|b\.hatena\.ne\.jp/retlet) :set! browser.tabs.loadDivertedInBackground=true
+
+
+" options
+" ======================================================================
+
+" これらのページを開いたときはアクティベートする
+set activate=homepage,quickmark,tabopen,paste
+
+" ex modeでインクリメント補完
+set wildoptions=auto
+
+" ブラウザタイトル
+set titlestring=Firefox
+
+" 履歴の件数
+set history=1000
+
+" :[tab]open の補完対象と順番
+set complete=sl
+
+" スクロールバーとタブ番号を表示
+set go=rbn
+
+" Beep設定
+set visualbell
+hi Bell opacity: .5;
+
+" ページロード時にテキストボックスにフォーカスするのを防ぐ
+set focuscontent
+
+" add strings for hitting]]/[[
+set nextpattern+=次ページ,次のページ,\b次.*,\b→,old
+set previouspattern+=prev, 前ページ,前のページ,\b前.*,\b→,new
+
+
+" Mappings
+" ======================================================================
+" OSのキーバインドを再現
+imap <C-f> <Right>
+imap <C-b> <Left>
+imap <C-p> <Up>
+imap <C-n> <Down>
+imap <C-h> <BS>
+imap <C-d> <DEL>
+cmap <C-f> <Right>
+cmap <C-b> <Left>
+cmap <C-p> <Up>
+cmap <C-n> <Down>
+cmap <C-h> <BS>
+cmap <C-d> <DEL>
+
+map <C-[> <ESC>
+
+" undo一覧から開く
+map U :undo<Space>
+
+" j/k でのスクロール幅を5行に変更
+noremap j 5j
+noremap k 5k
+
+" 上のディレクトリに移動
+map <BS> gu
+map <C-BS> gU
+
+" タブ順序変更
+map <C-h> :tabmove! -1<CR>
+map <C-l> :tabmove! +1<CR>
+
+" h/l で 戻る/進む
+noremap h H
+noremap l L
+
+" J/K でページダウン/アップ
+map J <C-d>
+map K <C-u>
+
+" buffer
+map . :buffer<Space>
+
+" qmark
+map m :qmark<Space>
+map M :qmarks<CR>
+
+" ex mode で C-n/p
+cmap <C-n> <Tab>
+cmap <C-p> <S-Tab>
+
+" ++/-- numbers in URL
+noremap ++ <C-a>
+noremap -- <C-x>
+
+" ! でページのCSSをon/off
+map ! :set invum<CR>
+
+" ex modeでC-jを無効化
+cmap <C-j> <Nop>
+
+
+" Plugins
+" ======================================================================
+" ime_controller.js
+let g:ex_ime_mode = "inactive"
+let g:textarea_ime_mode = "active"
+
+" migemo_hint.js
+set hintmatching=custom
+
+" google-search.js
+map gs :gsearch!<Space>
+
+" sbmcommentsviewer.js
+let g:def_sbm_format = "timestamp,id,tagsAndComment"
+let g:def_sbms = "h"
+map bb :viewSBMComments<CR>
+
+" ldrize_cooperation.js
+let g:ldrc_captureMappings = "['j','k','p','o']"
+let g:ldrc_intelligence_bind = "true"
+let g:ldrc_skip = "0"
+map Q :toggleldrc<CR>
+
+" direct_bookmark.js
+let g:direct_sbm_use_services_by_tag = "hd"
+let g:direct_sbm_use_services_by_post = "hd"
+let g:direct_sbm_is_normalize = "false"
+let g:direct_sbm_is_use_migemo = "true"
+map a :sbm<Space>
+map B :bentry<CR>
+map ,a :btags<CR>
+
+" clock.js
+let clock_format='[%t %d]'
+
+"appendAnchor.js
+let g:auto_append_anchor = "true"
+
+" copy.js
+map c :copy<space>
+js <<EOM
+liberator.globalVariables.copy_templates = [
+  { label: 'titleAndURL',    value: '%TITLE% %URL%' },
+  { label: 'title',          value: '%TITLE%' },
+  { label: 'url',            value: '%URL%' },
+  { label: 'markdown',       value: '[%TITLE%](%URL% "%TITLE%")' },
+  { label: 'markdownsel',    value: '[%SEL%](%URL% "%TITLE%")' },
+  { label: 'htmlblockquote', value: '<blockquote cite="%URL%" title="%TITLE%">%HTMLSEL%</blockquote>' }
+];
+EOM
+
+" localkeymode.js
+let g:localkeymode_enable = "true"
+js <<EOM
+liberator.globalVariables.localKeyMappings=[
+  [/^http:\/\/www\.nicovideo\.jp\/watch/, [
+    ['p', ':nicopause'],
+    ['m', ':nicomute'],
+    ['v', ':nicommentvisible'],
+    ['s', ':nicoseek! +10'],
+    ['S', ':nicoseek! -10'],
+    ['z', ':nicosize'],
+    ['c', ':nicomment ', true],
+    ['C', ':nicommand ', true],
+    ['a', ':nicovolume! +10'],
+    ['A', ':nicovolume! -10'],
+  ]],
+  [/^http:\/\/www\.youtube\.com\/watch/, [
+    ['p', ':ytpause'],
+    ['m', ':ytmute'],
+    ['s', ':ytseek! +10'],
+    ['S', ':ytseek! -10'],
+    ['z', ':ytsize'],
+    ['a', ':ytvolume! +10'],
+    ['A', ':ytvolume! -10'],
+  ]],
+  [/^http:\/\/reader\.livedoor\.com\/reader/, [
+    ['f', function () hints.show("t")],
+  ]],
+  [/^/,  [
+    ['f', function () hints.show("o")],
+  ]],
+];
+EOM
+
+" feedSomeKeys_2.js
+autocmd LocationChange .* :fmapc
+" Tumblr (要dashboard+tombloo.user.js, ReblogCommand.user.js)
+autocmd LocationChange http://.*\.tumblr\.com/ :fmap i,tj
+autocmd LocationChange http://.*\.tumblr\.com/ :fmap e,tj
+" Gmail
+autocmd LocationChange ^https?://mail\.google\.com/(mail|a)/ :fmap -d 4 c / j k n p o u e x s r a # [ ] z ? gi gs gt gd ga gc
+" livedoor Reader/Fastladder/OpenFL
+autocmd LocationChange ^http://(reader\.livedoor\.com|fastladder\.com|0\.0\.0\.0\:3000)/reader/ :fmap j k s a p v c z Z b i,ie r < > o,vj J,<Space> K,<S-Space> q w g u T
+" はてブ
+autocmd LocationChange ^http://b\.hatena\.ne\.jp/retlet :fmap j k o e b
+
+
+" javascript
+" ======================================================================
+
+" ステータスバーにfeedボタンを表示
+js <<EOM
+(function(){
+ var feedPanel = document.createElement('statusbarpanel');
+ var feedButton = document.getElementById('feed-button');
+ feedPanel.setAttribute('id','feed-panel-clone');
+ feedPanel.appendChild(feedButton.cloneNode(true));
+ feedButton.parentNode.removeChild(feedButton);
+ document.getElementById('status-bar').insertBefore(feedPanel,document.getElementById('security-button'));
+})();
+EOM
+
+" feedSomeKeys_2.jsとlocalkeymode.jsの相性問題対応パッチ
+" cf.http://vimperator.g.hatena.ne.jp/nokturnalmortum/20081220/1229773089
+js <<EOM
+autocommands.add(
+  'VimperatorEnter',
+  /.*/,
+  function () {
+    let (orig = plugins.LocalKeyMode.loadKeyMap) {
+      plugins.LocalKeyMode.loadKeyMap = function () {
+        if (!liberator.plugins.feedKey || liberator.plugins.feedKey.origMap.length <= 0)
+          orig.call(plugins.LocalKeyMode);
+      };
+    }
+  }
+);
+EOM
+
+javascript <<EOM
+liberator.globalVariables.proxy_settings = [
+   {
+      conf_name: 'disable',
+      conf_usage: 'direct connection',
+      settings: [
+      {
+         label: 'type',
+         param: 0
+      }
+      ]
+   },
+   {
+      conf_name: 'kuins',
+      conf_usage: 'use kuins',
+      settings: [
+      {
+         label: 'type',
+         param: 1
+      },
+      {
+         label: 'http',
+         param: 'proxy.kuins.net'
+      },
+      {
+         label: 'http_port',
+         param: 8080
+      }
+      ]
+   }
+];
+EOM
+
+" qmarks
+" ======================================================================
+qmark c http://www.google.com/calendar/render?hl=ja
+qmark d http://delicious.com/bonty.shushusha
+qmark g http://gmail.com
+qmark h http://b.hatena.ne.jp/bonty_shushusha/
+qmark l http://reader.livedoor.com/reader/
+qmark m http://maps.google.co.jp/
+qmark n http://www.nicovideo.jp/
+qmark p http://www.flickr.com/
+qmark r http://www.rememberthemilk.com/home/bonty_shushusha/#section.tasks
+qmark t http://twitter.com/
+qmark y http://jp.youtube.com/
+qmark T http://www.tumblr.com/dashboard
+
+" colorscheme
+" ======================================================================
+colorscheme sweets
+style -name tab-style-fix chrome://* <<EOM
+.tab-text-shadow,
+.tabs-newtab-button {
+  display: none !important;
+}
+EOM
+
+" clock style
+style -name clock chrome://* <<EOM
+#liberator-plugin-clock-box > * {
+  color: white !important;
+  background-color: #333 !important;
+}
+EOM
+
+echo 'get smart!'
+
+" vim: set ft=vimperator:
